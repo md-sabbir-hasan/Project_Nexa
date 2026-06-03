@@ -33,12 +33,12 @@ public class AccountServiceImpl implements AccountService{
         account.setIsActive(true);
         account.setIsDefault(false);
 
-        // Parent set করা
+        // Parent set
         if (request.getParentId() != null) {
             Account parent = accountRepository.findById(request.getParentId())
                     .orElseThrow(() -> new ResourceNotFoundException("Parent account not found"));
 
-            // Child এর type, parent এর type এর same হতে হবে
+            // Child type = parent type
             if (!parent.getType().equals(request.getType())) {
                 throw new BusinessRuleException("Child account type must match parent account type");
             }
@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService{
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        // Default account এর type change করা যাবে না
+        //Can not change Default account type
         if (account.getIsDefault() && !account.getType().equals(request.getType())) {
             throw new BusinessRuleException("Cannot change type of a default account");
         }
@@ -84,7 +84,7 @@ public class AccountServiceImpl implements AccountService{
 
     @Override
     public List<AccountResponseDto> getTree() {
-        // শুধু root accounts নাও, children auto আসবে recursively
+        // only take root accounts, children comes auto recursively
         return accountRepository.findByParentIsNull()
                 .stream()
                 .map(this::toTreeResponse)
