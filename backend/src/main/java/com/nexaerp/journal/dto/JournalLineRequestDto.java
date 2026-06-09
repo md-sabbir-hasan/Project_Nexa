@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class JournalLineRequestDto {
     @NotNull(message = "Account is required")
     private Long accountId;

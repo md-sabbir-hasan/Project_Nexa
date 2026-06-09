@@ -1,5 +1,5 @@
 package com.nexaerp.journal;
 
-public class JournalEntryService {
+public interface JournalEntryService {
 
 }

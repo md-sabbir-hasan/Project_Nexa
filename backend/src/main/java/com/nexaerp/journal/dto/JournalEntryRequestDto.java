@@ -12,8 +12,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
 public class JournalEntryRequestDto {
     @NotNull(message = "Date is required")
     private LocalDate date;
