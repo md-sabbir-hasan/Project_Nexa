@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService{
 
-    @Autowired
     private final AccountRepository accountRepository;
 
     @Override
