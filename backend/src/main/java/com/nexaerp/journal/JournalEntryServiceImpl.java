@@ -72,7 +72,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
         entry.setDescription(request.getDescription());
         entry.setType(request.getType());
 
-        // পুরনো lines মুছে নতুন lines দাও
+        // remove older line, replace new line
         journalLineRepository.deleteAll(entry.getLines());
 
         BigDecimal total = request.getLines().stream()
@@ -135,7 +135,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
             throw new BusinessRuleException("Only POSTED entries can be reversed");
         }
 
-        // Reverse entry তৈরি
+        // Reverse entry makes
         JournalEntry reversal = new JournalEntry();
         reversal.setEntryNumber(generateEntryNumber());
         reversal.setDate(LocalDate.now());
@@ -148,13 +148,13 @@ public class JournalEntryServiceImpl implements JournalEntryService{
 
         JournalEntry savedReversal = journalEntryRepository.save(reversal);
 
-        // উল্টো Lines তৈরি
+        // make reverse Lines
         List<JournalLine> reversalLines = original.getLines().stream()
                 .map(line -> JournalLine.builder()
                         .journalEntry(savedReversal)
                         .account(line.getAccount())
-                        .debit(line.getCredit())   // উল্টো
-                        .credit(line.getDebit())   // উল্টো
+                        .debit(line.getCredit())   // reverse
+                        .credit(line.getDebit())   // reverse
                         .description("Reversal: " + line.getDescription())
                         .build())
                 .collect(Collectors.toList());
@@ -201,7 +201,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
                     "Total debit (" + totalDebit + ") must equal total credit (" + totalCredit + ")"
             );
         }
-        // প্রতিটা line এ debit অথবা credit থাকতে হবে, দুটো একসাথে না
+        // "Every line must contain either a debit or a credit, never both together"
         for (JournalLineRequestDto line : lines) {
             if (line.getDebit().compareTo(BigDecimal.ZERO) > 0
                     && line.getCredit().compareTo(BigDecimal.ZERO) > 0) {
@@ -221,7 +221,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
         switch (account.getType()) {
             case ASSET:
             case EXPENSE:
-                // Debit বাড়ায়, Credit কমায়
+                // Debit Increase, Credit Decrease
                 account.setCurrentBalance(
                         account.getCurrentBalance()
                                 .add(line.getDebit())
@@ -231,7 +231,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
             case LIABILITY:
             case EQUITY:
             case REVENUE:
-                // Credit বাড়ায়, Debit কমায়
+                // Credit Increase, Debit Decrease
                 account.setCurrentBalance(
                         account.getCurrentBalance()
                                 .add(line.getCredit())
