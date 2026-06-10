@@ -114,7 +114,7 @@ public class AccountServiceImpl implements AccountService{
 
     }
 
-    // ── Mapper ──────────────────────────────────────────
+                                  // ── Mapper ───
 
     private AccountResponseDto toResponse(Account account) {
         AccountResponseDto dto = new AccountResponseDto();
