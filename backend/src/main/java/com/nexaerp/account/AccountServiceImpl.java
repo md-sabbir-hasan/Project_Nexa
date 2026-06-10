@@ -125,6 +125,7 @@ public class AccountServiceImpl implements AccountService{
         dto.setType(account.getType());
         dto.setIsActive(account.getIsActive());
         dto.setIsDefault(account.getIsDefault());
+        dto.setCurrentBalance(account.getCurrentBalance());
 
         if (account.getParent() != null) {
             dto.setParentId(account.getParent().getId());

@@ -3,6 +3,7 @@ package com.nexaerp.account.dto;
 import com.nexaerp.account.AccountType;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -20,5 +21,6 @@ public class AccountResponseDto {
     private Boolean isDefault;
     private Long parentId;
     private String parentName;
+    private BigDecimal currentBalance;
     private List<AccountResponseDto> children; //for Tree structure
 }
