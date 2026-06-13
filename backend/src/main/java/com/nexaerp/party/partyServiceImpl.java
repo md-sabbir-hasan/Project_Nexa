@@ -41,7 +41,7 @@ public class partyServiceImpl implements PartyService{
 
         Party saved = partyRepository.save(party);
 
-        // Opening Balance থাকলে Journal Entry তৈরি করো
+        // To create a Journal Entry for an Opening Balance in accounting
         if (request.getOpeningBalance() != null
                 && request.getOpeningBalance().compareTo(BigDecimal.ZERO) != 0) {
             createOpeningBalanceEntry(saved);
@@ -119,8 +119,8 @@ public class partyServiceImpl implements PartyService{
 
         JournalEntry saved = journalEntryRepository.save(entry);
 
-        // CUSTOMER → Receivable Debit, Equity Credit
-        // VENDOR   → Equity Debit, Payable Credit
+        // CUSTOMER = Receivable Debit, Equity Credit
+        // VENDOR   = Equity Debit, Payable Credit
         JournalLine line1 = new JournalLine();
         JournalLine line2 = new JournalLine();
 
