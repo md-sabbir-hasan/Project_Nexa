@@ -152,9 +152,17 @@ public class partyServiceImpl implements PartyService{
         journalLineRepository.save(line1);
         journalLineRepository.save(line2);
 
+        if (party.getType() == PartyType.VENDOR) {
+            updateBalance(openingEquity, line1);  // line1 = openingEquity
+            updateBalance(partyAccount, line2);   // line2 = partyAccount
+        } else {
+            updateBalance(partyAccount, line1);   // line1 = partyAccount
+            updateBalance(openingEquity, line2);  // line2 = openingEquity
+        }
+
         // Account Balance update
-        updateBalance(partyAccount, line1);
-        updateBalance(openingEquity, line2);
+//        updateBalance(partyAccount, line1);
+//        updateBalance(openingEquity, line2);
     }
 
     private void updateBalance(Account account, JournalLine line) {
