@@ -14,9 +14,9 @@ public interface JournalEntryService {
 
     List<JournalEntryResponseDto> getAll();
 
-    JournalEntryResponseDto post(Long id);      // DRAFT → POSTED
+    JournalEntryResponseDto post(Long id);      // DRAFT to POSTED
 
-    JournalEntryResponseDto reverse(Long id);   // POSTED → REVERSED
+    JournalEntryResponseDto reverse(Long id);   // POSTED to REVERSED
 
     void delete(Long id);                        // only DRAFT
 

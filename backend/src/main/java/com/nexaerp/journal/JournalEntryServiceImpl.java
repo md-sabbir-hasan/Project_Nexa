@@ -184,7 +184,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
 
     }
 
-                                // ── Private Helpers ──
+                                // -- Private Helpers --
 
     private void validateLines(List<JournalLineRequestDto> lines) {
 
@@ -266,7 +266,7 @@ public class JournalEntryServiceImpl implements JournalEntryService{
                 .build();
     }
 
-                                     // ── Mappers ──
+                                     // -- Mappers --
 
     private JournalEntryResponseDto toResponse(JournalEntry entry) {
         JournalEntryResponseDto dto = JournalEntryResponseDto.builder()
