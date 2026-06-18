@@ -12,6 +12,4 @@ public interface VendorBillRepository extends JpaRepository<VendorBill, Long> {
     List<VendorBill> findByPartyId(Long partyId);
     List<VendorBill> findByStatus(VendorBillStatus status);
     List<VendorBill> findByBillType(VendorBillType billType);
-    Optional<VendorBill> findBySourceTypeAndSourceId(
-            VendorBillReferenceType referenceType, String referenceId);
 }
