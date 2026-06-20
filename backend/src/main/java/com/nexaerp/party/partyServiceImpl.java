@@ -7,9 +7,9 @@ import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.journal.*;
 import com.nexaerp.party.dto.PartyRequestDto;
 import com.nexaerp.party.dto.PartyResponseDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -8,9 +8,9 @@ import com.nexaerp.journal.dto.JournalEntryRequestDto;
 import com.nexaerp.journal.dto.JournalEntryResponseDto;
 import com.nexaerp.journal.dto.JournalLineRequestDto;
 import com.nexaerp.journal.dto.JournalLineResponseDto;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
