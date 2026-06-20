@@ -192,7 +192,9 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Customer payment → allocate against Invoices
             List<Invoice> dueInvoices = invoiceRepository
-                    .findByPartyIdAndDueAmountGreaterThanOrderByDueDateAsc(partyId, BigDecimal.ZERO);
+                    .findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
+                            partyId, BigDecimal.ZERO, InvoiceStatus.CANCELLED);
+
 
             for (Invoice invoice : dueInvoices) {
                 if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
@@ -213,8 +215,10 @@ public class PaymentServiceImpl implements PaymentService {
 
             // Vendor payment → allocate against Vendor Bills
             List<VendorBill> dueBills = vendorBillRepository
-                    .findByPartyIdAndDueAmountGreaterThanOrderByDueDateAsc(partyId, BigDecimal.ZERO);
+                    .findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
+                            partyId, BigDecimal.ZERO, VendorBillStatus.CANCELLED);
 
+            
             for (VendorBill bill : dueBills) {
                 if (remaining.compareTo(BigDecimal.ZERO) <= 0) break;
 

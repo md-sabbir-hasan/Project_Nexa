@@ -15,6 +15,6 @@ public interface VendorBillRepository extends JpaRepository<VendorBill, Long> {
     List<VendorBill> findByBillType(VendorBillType billType);
     // Used for auto (FIFO) payment allocation
 // Returns bills with remaining due amount, oldest due date first
-    List<VendorBill> findByPartyIdAndDueAmountGreaterThanOrderByDueDateAsc(
-            Long partyId, BigDecimal dueAmount);
+    List<VendorBill> findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
+            Long partyId, BigDecimal dueAmount, VendorBillStatus excludeStatus);
 }

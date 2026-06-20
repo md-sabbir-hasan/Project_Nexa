@@ -176,6 +176,7 @@ public class InvoiceServiceImpl implements InvoiceService{
 
         invoice.setStatus(InvoiceStatus.CANCELLED);
         invoice.setCancelledReason(reason);
+        invoice.setDueAmount(BigDecimal.ZERO);
 
         return toResponse(invoiceRepository.save(invoice));
     }

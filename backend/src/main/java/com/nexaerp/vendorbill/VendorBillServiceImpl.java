@@ -227,6 +227,7 @@ public class VendorBillServiceImpl implements VendorBillService {
 
         bill.setStatus(VendorBillStatus.CANCELLED);
         bill.setCancelledReason(reason);
+        bill.setDueAmount(BigDecimal.ZERO);
 
         return toResponse(vendorBillRepository.save(bill));
     }

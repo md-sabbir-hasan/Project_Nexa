@@ -15,6 +15,6 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     boolean existsByInvoiceNumber(String invoiceNumber);
     // Used for auto (FIFO) payment allocation
 // Returns invoices with remaining due amount, oldest due date first
-    List<Invoice> findByPartyIdAndDueAmountGreaterThanOrderByDueDateAsc(
-            Long partyId, BigDecimal dueAmount);
+    List<Invoice> findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
+            Long partyId, BigDecimal dueAmount, InvoiceStatus excludeStatus);
 }
