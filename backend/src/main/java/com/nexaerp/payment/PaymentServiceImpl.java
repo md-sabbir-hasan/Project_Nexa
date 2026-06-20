@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,13 +117,58 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public PaymentResponseDto post(Long id) {
-        return null;
+
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
+
+        if (!payment.getStatus().equals(PaymentStatus.DRAFT)) {
+            throw new BusinessRuleException("Only DRAFT payments can be posted");
+        }
+
+        // Step 1 — create the journal entry for this payment
+        createJournalEntry(payment);
+
+        // Step 2 — apply each allocation to the matching invoice/bill
+        List<PaymentAllocation> allocations =
+                paymentAllocationRepository.findByPaymentId(payment.getId());
+
+        for (PaymentAllocation allocation : allocations) {
+            applyAllocationToDocument(allocation);
+        }
+
+        payment.setStatus(PaymentStatus.POSTED);
+        payment.setPostedAt(LocalDateTime.now());
+
+        return toResponse(paymentRepository.save(payment));
     }
 
     @Override
+    @Transactional
     public PaymentResponseDto cancel(Long id) {
-        return null;
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
+
+        if (payment.getStatus().equals(PaymentStatus.CANCELLED)) {
+            throw new BusinessRuleException("Payment is already cancelled");
+        }
+
+        // If already posted, we must undo its effects first
+        if (payment.getStatus().equals(PaymentStatus.POSTED)) {
+            reverseJournalEntry(payment);
+
+            List<PaymentAllocation> allocations =
+                    paymentAllocationRepository.findByPaymentId(payment.getId());
+
+            for (PaymentAllocation allocation : allocations) {
+                undoAllocationFromDocument(allocation);
+            }
+        }
+
+        payment.setStatus(PaymentStatus.CANCELLED);
+
+        return toResponse(paymentRepository.save(payment));
     }
 
 
