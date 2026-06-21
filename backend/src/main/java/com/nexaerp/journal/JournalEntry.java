@@ -27,6 +27,8 @@ public class JournalEntry {
 
     private String description;
 
+    private String referenceNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private JournalEntryType type;

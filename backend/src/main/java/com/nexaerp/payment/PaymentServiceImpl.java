@@ -361,6 +361,7 @@ public class PaymentServiceImpl implements PaymentService {
         entry.setSourceType(JournalSourceType.PAYMENT);
         entry.setSourceId(payment.getId());
         entry.setTotalAmount(payment.getAmount());
+        entry.setReferenceNumber(payment.getPaymentNumber());
 
         JournalEntry saved = journalEntryRepository.save(entry);
 
@@ -391,6 +392,7 @@ public class PaymentServiceImpl implements PaymentService {
                     reversal.setSourceId(payment.getId());
                     reversal.setTotalAmount(original.getTotalAmount());
                     reversal.setReversedFromId(original.getId());
+                    reversal.setReferenceNumber("REV-" + original.getReferenceNumber());
 
                     JournalEntry savedReversal = journalEntryRepository.save(reversal);
 

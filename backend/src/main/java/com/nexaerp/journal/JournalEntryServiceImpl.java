@@ -38,6 +38,8 @@ public class JournalEntryServiceImpl implements JournalEntryService{
         entry.setType(request.getType());
         entry.setStatus(JournalStatus.DRAFT);
         entry.setSourceType(JournalSourceType.MANUAL);
+        entry.setReferenceNumber(entry.getEntryNumber());
+
 
         // Total amount calculate
         BigDecimal total = request.getLines().stream()

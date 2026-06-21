@@ -348,6 +348,7 @@ public class VendorBillServiceImpl implements VendorBillService {
         entry.setSourceType(JournalSourceType.VENDOR_BILL);
         entry.setSourceId(bill.getId());
         entry.setTotalAmount(bill.getGrandTotal());
+        entry.setReferenceNumber(bill.getBillNumber());
 
         JournalEntry saved = journalEntryRepository.save(entry);
 
@@ -432,6 +433,7 @@ public class VendorBillServiceImpl implements VendorBillService {
                     reversal.setSourceId(bill.getId());
                     reversal.setTotalAmount(original.getTotalAmount());
                     reversal.setReversedFromId(original.getId());
+                    reversal.setReferenceNumber("REV-" + original.getReferenceNumber());
 
                     JournalEntry savedReversal = journalEntryRepository.save(reversal);
 

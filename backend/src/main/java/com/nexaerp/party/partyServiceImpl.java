@@ -116,6 +116,7 @@ public class partyServiceImpl implements PartyService{
         entry.setStatus(JournalStatus.POSTED);
         entry.setSourceType(JournalSourceType.MANUAL);
         entry.setTotalAmount(party.getOpeningBalance());
+        entry.setReferenceNumber(entry.getEntryNumber());
 
         JournalEntry saved = journalEntryRepository.save(entry);
 

@@ -268,6 +268,7 @@ public class InvoiceServiceImpl implements InvoiceService{
         entry.setSourceType(JournalSourceType.INVOICE);
         entry.setSourceId(invoice.getId());
         entry.setTotalAmount(invoice.getGrandTotal());
+        entry.setReferenceNumber(invoice.getInvoiceNumber());
 
         JournalEntry saved = journalEntryRepository.save(entry);
 
@@ -330,6 +331,7 @@ public class InvoiceServiceImpl implements InvoiceService{
                     reversal.setSourceId(invoice.getId());
                     reversal.setTotalAmount(original.getTotalAmount());
                     reversal.setReversedFromId(original.getId());
+                    reversal.setReferenceNumber("REV-" + original.getReferenceNumber());
 
                     JournalEntry savedReversal = journalEntryRepository.save(reversal);
 
