@@ -89,7 +89,7 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public TrialBalanceResponseDto getTrialBalanceResponseDto(LocalDate asOfDate) {
+    public TrialBalanceResponseDto getTrialBalance(LocalDate asOfDate) {
         // Trial Balance simply reads the current stored balance of every account.
         // Note: this reflects the balance AS OF NOW, since we don't keep historical
         // snapshots — asOfDate is accepted for future use (e.g. historical reports).

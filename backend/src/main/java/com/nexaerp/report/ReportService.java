@@ -7,5 +7,5 @@ import java.time.LocalDate;
 
 public interface ReportService {
     LedgerResponseDto getLedger(Long accountId, LocalDate fromDate, LocalDate toDate);
-    TrialBalanceResponseDto getTrialBalanceResponseDto(LocalDate asOfDate);
+    TrialBalanceResponseDto getTrialBalance(LocalDate asOfDate);
 }
