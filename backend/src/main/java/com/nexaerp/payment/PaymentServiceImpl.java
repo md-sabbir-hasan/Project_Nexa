@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        // Build allocation list — either auto (FIFO) or manual (from request)
+        // Build allocation list - either auto (FIFO) or manual (from request)
         List<PaymentAllocation> allocations;
 
         if (Boolean.TRUE.equals(request.getAutoAllocate())) {
@@ -190,7 +190,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         if (payment.getPaymentType() == PaymentType.RECEIPT) {
 
-            // Customer payment → allocate against Invoices
+            // Customer payment to allocate against Invoices
             List<Invoice> dueInvoices = invoiceRepository
                     .findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
                             partyId, BigDecimal.ZERO, InvoiceStatus.CANCELLED);
@@ -213,7 +213,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         } else {
 
-            // Vendor payment → allocate against Vendor Bills
+            // Vendor payment to allocate against Vendor Bills
             List<VendorBill> dueBills = vendorBillRepository
                     .findByPartyIdAndDueAmountGreaterThanAndStatusNotOrderByDueDateAsc(
                             partyId, BigDecimal.ZERO, VendorBillStatus.CANCELLED);
@@ -234,14 +234,13 @@ public class PaymentServiceImpl implements PaymentService {
                 remaining = remaining.subtract(allocateAmount);
             }
         }
-        // Whatever is left after all due documents are cleared stays unallocated (advance)
+
         return allocations;
     }
 
 
 
-//      Manual allocation: uses exactly what the user specified in the request.
-//      Validates that total allocated does not exceed the payment amount.
+// Apply manual allocations and validate allocation limits.
 
     private List<PaymentAllocation> buildManualAllocations(
             List<PaymentAllocationRequestDto> requestAllocations, Payment payment) {
@@ -271,8 +270,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-//      Applies one allocation's amount to the actual Invoice or VendorBill —
-//      updates paidAmount, dueAmount, and status. Called only during POST.
+// Apply allocation and update payment status on an Invoice/VendorBill.
 
     private void applyAllocationToDocument(PaymentAllocation allocation) {
 

@@ -48,7 +48,7 @@ public class VendorBillServiceImpl implements VendorBillService {
         bill.setBillNumber(generateBillNumber());
         bill.setBillDate(request.getBillDate());
 
-        // If postingDate not provided, use billDate
+        // If posting Date not provided, use billDate
         bill.setPostingDate(request.getPostingDate() != null
                 ? request.getPostingDate()
                 : request.getBillDate());
