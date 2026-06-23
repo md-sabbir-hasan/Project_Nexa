@@ -33,18 +33,18 @@ public class ReportServiceImpl implements ReportService{
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        // Step 1 — calculate opening balance from all lines BEFORE fromDate
+        // calculate opening balance from all lines BEFORE fromDate
         List<JournalLine> beforeLines =
                 journalLineRepository.findByAccountIdAndJournalEntry_DateBefore(accountId, fromDate);
 
         BigDecimal openingBalance = calculateNetEffect(account, beforeLines);
 
-        // Step 2 — get all lines WITHIN the date range, sorted by date
+        // get all lines WITHIN the date range, sorted by date
         List<JournalLine> rangeLines = journalLineRepository
                 .findByAccountIdAndJournalEntry_DateBetweenOrderByJournalEntry_DateAsc(
                         accountId, fromDate, toDate);
 
-        // Step 3 — walk through lines one by one, building running balance
+        // walk through lines one by one, building running balance
         BigDecimal runningBalance = openingBalance;
         BigDecimal totalDebit = BigDecimal.ZERO;
         BigDecimal totalCredit = BigDecimal.ZERO;
@@ -90,9 +90,8 @@ public class ReportServiceImpl implements ReportService{
 
     @Override
     public TrialBalanceResponseDto getTrialBalance(LocalDate asOfDate) {
-        // Trial Balance simply reads the current stored balance of every account.
-        // Note: this reflects the balance AS OF NOW, since we don't keep historical
-        // snapshots — asOfDate is accepted for future use (e.g. historical reports).
+        // Trial Balance reads current account balances.
+        // as of Date is currently unused (reserved for historical reports).
         List<Account> accounts = accountRepository.findAll();
 
         BigDecimal totalDebit = BigDecimal.ZERO;
@@ -104,8 +103,7 @@ public class ReportServiceImpl implements ReportService{
 
             BigDecimal balance = account.getCurrentBalance();
 
-            // Determine which side (debit or credit) this account's balance sits on,
-            // based on its type's natural balance.
+            //Get balance side based on account type.
             BigDecimal debitBalance = BigDecimal.ZERO;
             BigDecimal creditBalance = BigDecimal.ZERO;
 
@@ -141,7 +139,7 @@ public class ReportServiceImpl implements ReportService{
                     .build());
         }
 
-        // Sort rows by account code for readability
+        // Sort rows by account
         rows.sort(Comparator.comparing(TrialBalanceRowDto::getAccountCode));
 
         return TrialBalanceResponseDto.builder()
@@ -159,10 +157,7 @@ public class ReportServiceImpl implements ReportService{
                             // ---Privet-----Helper--------
 
 
-
-//     Calculates the net balance effect of a list of journal lines on an account,
-//     based on the account's type (used for opening balance calculation).
-
+    // Calculate net Balance effect of journal Line in an Account
     private BigDecimal calculateNetEffect(Account account, List<JournalLine> lines) {
         BigDecimal balance = BigDecimal.ZERO;
         for (JournalLine line : lines) {
@@ -172,8 +167,7 @@ public class ReportServiceImpl implements ReportService{
     }
 
 
-//     Applies one journal line's debit/credit to a running balance,
-//     following the same Debit/Credit rule used everywhere else in the system.
+//     Applies Single journal line debit/credit to a running balance (debit=credit),
 
     private BigDecimal applySingleLineEffect(Account account, BigDecimal currentBalance, JournalLine line) {
         switch (account.getType()) {
