@@ -44,11 +44,11 @@ public class Payment {
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount;
 
-    // How much of "amount" has been allocated to invoices/bills
+    // How much of amount allocated to invoices/bills
     @Column(precision = 19, scale = 2)
     private BigDecimal allocatedAmount = BigDecimal.ZERO;
 
-    // Remaining amount not yet allocated (acts as advance)
+    // Remaining amount not yet allocated
     @Column(precision = 19, scale = 2)
     private BigDecimal unallocatedAmount = BigDecimal.ZERO;
 

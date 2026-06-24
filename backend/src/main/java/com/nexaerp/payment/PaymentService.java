@@ -15,9 +15,8 @@ public interface PaymentService {
 
     List<PaymentResponseDto> getByParty(Long partyId);
 
-    // DRAFT → POSTED: creates journal entry, updates invoice/bill paid/due amounts
     PaymentResponseDto post(Long id);
 
-    // Reverses journal entry and undoes invoice/bill due amount changes if already posted
+    // Reverses journal entry and undo invoice/bill due amount changes if already posted
     PaymentResponseDto cancel(Long id);
 }

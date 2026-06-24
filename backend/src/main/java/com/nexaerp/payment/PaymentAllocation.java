@@ -23,7 +23,7 @@ public class PaymentAllocation {
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
-    // Which type of document this allocation points to (INVOICE or VENDOR_BILL)
+    // Which type of document this allocation points
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PaymentReferenceType referenceType;

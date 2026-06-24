@@ -17,18 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class VendorBillResponseDto {
-    // Bill identifier
     private Long id;
 
-    // Auto-generated bill number (e.g. BILL-2025-000001)
     private String billNumber;
 
     // Dates
-    private LocalDate billDate;       // vendor's invoice date
-    private LocalDate postingDate;    // accounting date
-    private LocalDate dueDate;        // payment deadline
+    private LocalDate billDate;
+    private LocalDate postingDate;
+    private LocalDate dueDate;
 
-    // Vendor's own invoice number
+    // Vendor own invoice number
     private String vendorBillRef;
 
     // Vendor details
@@ -52,15 +50,14 @@ public class VendorBillResponseDto {
     private String notes;
     private VendorBillCancelledReason cancelledReason;
 
-    // Calculated totals (stored in DB for performance)
-    private BigDecimal subTotal;        // sum of all item subtotals
-    private BigDecimal discountAmount;  // sum of all discounts
-    private BigDecimal vatAmount;       // total Input VAT
-    private BigDecimal tdsAmount;       // total TDS to pay government
-    private BigDecimal grandTotal;      // subTotal - discount + VAT
-    private BigDecimal netPayable;      // grandTotal - TDS
-    private BigDecimal paidAmount;      // how much has been paid
-    private BigDecimal dueAmount;       // netPayable - paidAmount
+    private BigDecimal subTotal;
+    private BigDecimal discountAmount;
+    private BigDecimal vatAmount;
+    private BigDecimal tdsAmount;
+    private BigDecimal grandTotal;
+    private BigDecimal netPayable;
+    private BigDecimal paidAmount;
+    private BigDecimal dueAmount;
 
     // Workflow timestamps
     private LocalDateTime approvedAt;

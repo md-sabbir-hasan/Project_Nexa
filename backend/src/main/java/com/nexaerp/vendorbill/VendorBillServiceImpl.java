@@ -254,7 +254,7 @@ public class VendorBillServiceImpl implements VendorBillService {
         // Amount after discount
         BigDecimal afterDiscount = subTotal.subtract(discountAmount);
 
-        // Calculate VAT (Input VAT - we receive this back from government)
+        // Calculate VAT (Input VAT )
         BigDecimal vatAmount = afterDiscount
                 .multiply(dto.getVatRate())
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
@@ -333,7 +333,7 @@ public class VendorBillServiceImpl implements VendorBillService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Accounts Payable not found"));
 
-        // Get TDS Payable account (we will add this account later)
+        // Get TDS Payable account
         Account tdsPayable = accountRepository.findByCode("2130")
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "TDS Payable not found"));
@@ -374,7 +374,7 @@ public class VendorBillServiceImpl implements VendorBillService {
             // Update expense account balance
             updateBalance(item.getExpenseAccount(), expenseAmount, BigDecimal.ZERO);
 
-            // Debit — Input VAT (if VAT exists on this item)
+            // Debit — Input VAT (if VAT exists)
             if (item.getVatAmount().compareTo(BigDecimal.ZERO) > 0) {
                 Account inputVat = accountRepository.findByCode("1130")
                         .orElseThrow(() -> new ResourceNotFoundException(

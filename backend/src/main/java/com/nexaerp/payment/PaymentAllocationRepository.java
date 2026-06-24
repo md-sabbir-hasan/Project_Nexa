@@ -8,7 +8,6 @@ public interface PaymentAllocationRepository extends JpaRepository<PaymentAlloca
     List<PaymentAllocation> findByPaymentId(Long paymentId);
 
     // Used to find all allocations made against a specific invoice/bill
-    // (needed when calculating how much of that invoice is already paid)
     List<PaymentAllocation> findByReferenceTypeAndReferenceId(
             PaymentReferenceType referenceType, Long referenceId);
 }

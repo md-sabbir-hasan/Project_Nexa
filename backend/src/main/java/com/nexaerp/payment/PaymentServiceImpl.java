@@ -70,7 +70,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Payment savedPayment = paymentRepository.save(payment);
 
-        // Build allocation list - either auto (FIFO) or manual (from request)
+        // Build allocation list - auto (FIFO) or manual (from request)
         List<PaymentAllocation> allocations;
 
         if (Boolean.TRUE.equals(request.getAutoAllocate())) {
@@ -180,8 +180,7 @@ public class PaymentServiceImpl implements PaymentService {
 
 
 
-//      FIFO auto allocation: picks the oldest unpaid invoices/bills first
-//      and fills them one by one until the payment amount runs out.
+//      FIFO auto allocation
 
     private List<PaymentAllocation> autoAllocateFifo(Payment payment, Long partyId) {
 
@@ -305,7 +304,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
 
-//     Undoes what applyAllocationToDocument did — used when a posted payment is canceled.
+//     what applyAllocationToDocument did — used when a posted payment is canceled.
 
     private void undoAllocationFromDocument(PaymentAllocation allocation) {
 

@@ -41,7 +41,7 @@ public class partyServiceImpl implements PartyService{
 
         Party saved = partyRepository.save(party);
 
-        // To create a Journal Entry for an Opening Balance in accounting
+        // To create a Journal Entry for a Opening Balance in accounting
         if (request.getOpeningBalance() != null
                 && request.getOpeningBalance().compareTo(BigDecimal.ZERO) != 0) {
             createOpeningBalanceEntry(saved);

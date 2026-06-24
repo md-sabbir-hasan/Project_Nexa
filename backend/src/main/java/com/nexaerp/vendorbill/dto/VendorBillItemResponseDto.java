@@ -10,18 +10,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class VendorBillItemResponseDto {
-    // Item identifier
     private Long id;
 
-    // Optional product reference (future inventory)
     private Long productId;
 
-    // The expense account this item is posted to
     private Long expenseAccountId;
     private String expenseAccountName;
     private String expenseAccountCode;
 
-    // Optional cost center (future)
     private Long costCenterId;
 
     // Item details
@@ -33,15 +29,15 @@ public class VendorBillItemResponseDto {
     private BigDecimal discountPercent;
     private BigDecimal discountAmount;
 
-    // VAT (Input VAT - we will receive this back)
+    // VAT
     private BigDecimal vatRate;
     private BigDecimal vatAmount;
 
-    // TDS (Tax Deducted at Source - we pay to government)
+    // TDS
     private BigDecimal tdsRate;
     private BigDecimal tdsAmount;
 
     // Totals
-    private BigDecimal subTotal;   // quantity x unitPrice
-    private BigDecimal lineTotal;  // subTotal - discount + VAT
+    private BigDecimal subTotal;
+    private BigDecimal lineTotal;
 }
