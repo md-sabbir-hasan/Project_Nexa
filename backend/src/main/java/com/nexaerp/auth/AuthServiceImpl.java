@@ -46,52 +46,51 @@ public class AuthServiceImpl implements AuthService{
 
 
     @Override
-    @Transactional
     public LoginResponseDto login(LoginRequestDto request, String ipAddress, String deviceName) {
         // 1. find user by email
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new ResourceNotFoundException("Invalid email or password"));
+                .orElseThrow(() -> new BusinessRuleException("Invalid email or password"));
 
-        // 2. check if account is locked
+        // Check lock
         if (user.getStatus() == UserStatus.LOCKED) {
             if (user.getLockedUntil() != null &&
                     LocalDateTime.now().isBefore(user.getLockedUntil())) {
                 throw new BusinessRuleException(
                         "Account is locked. Try again after " + user.getLockedUntil());
             } else {
-                // Lock period expired ---- unlock the account
                 user.setStatus(UserStatus.ACTIVE);
                 user.setFailedLoginAttempts(0);
                 user.setLockedUntil(null);
+                userRepository.save(user); // ← manually save
             }
         }
 
-        // 3.check if account is active
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new BusinessRuleException("Account is not active");
         }
 
-        // 4. verify password
+        // Wrong password
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
 
-            // Increment failed attempts
             user.setFailedLoginAttempts(user.getFailedLoginAttempts() + 1);
 
-            // Lock account if max attempts reached
             if (user.getFailedLoginAttempts() >= maxFailedAttempts) {
                 user.setStatus(UserStatus.LOCKED);
                 user.setLockedUntil(LocalDateTime.now().plusMinutes(lockDurationMinutes));
-                userRepository.save(user);
+            }
+
+            userRepository.save(user); // ← exception throw এর আগেই save করো
+
+            if (user.getStatus() == UserStatus.LOCKED) {
                 throw new BusinessRuleException(
                         "Account locked due to too many failed attempts. Try again after " +
                                 lockDurationMinutes + " minutes");
             }
 
-            userRepository.save(user);
             throw new BusinessRuleException("Invalid email or password");
         }
 
-        // 5.login successful, reset failed attempts
+        // Success
         user.setFailedLoginAttempts(0);
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
