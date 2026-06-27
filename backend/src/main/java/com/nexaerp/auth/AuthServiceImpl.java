@@ -174,7 +174,7 @@ public class AuthServiceImpl implements AuthService{
     @Override
     @Transactional
     public void logout(Long userId) {
-        // Revoke all refresh tokens for this user
+        // Revoke all refresh token for this user
         refreshTokenRepository.deleteAllByUserId(userId);
     }
 }
