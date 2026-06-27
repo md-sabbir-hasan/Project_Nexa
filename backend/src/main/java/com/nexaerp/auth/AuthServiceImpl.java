@@ -47,7 +47,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public LoginResponseDto login(LoginRequestDto request, String ipAddress, String deviceName) {
-        // 1. find user by email
+        // find user by email
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BusinessRuleException("Invalid email or password"));
 
@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService{
                 user.setStatus(UserStatus.ACTIVE);
                 user.setFailedLoginAttempts(0);
                 user.setLockedUntil(null);
-                userRepository.save(user); // ← manually save
+                userRepository.save(user);
             }
         }
 
@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService{
                 user.setLockedUntil(LocalDateTime.now().plusMinutes(lockDurationMinutes));
             }
 
-            userRepository.save(user); // ← exception throw এর আগেই save করো
+            userRepository.save(user); //
 
             if (user.getStatus() == UserStatus.LOCKED) {
                 throw new BusinessRuleException(
@@ -95,18 +95,18 @@ public class AuthServiceImpl implements AuthService{
         user.setLastLoginAt(LocalDateTime.now());
         userRepository.save(user);
 
-        // 6.collect all permissions from all roles
+        // collect all permissions from all roles
         List<String> permissions = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
                 .map(permission -> permission.getCode())
                 .distinct()
                 .collect(Collectors.toList());
 
-        // 7. generate access token
+        //  generate access token
         String accessToken = jwtUtil.generateAccessToken(
                 user.getId(), user.getEmail(), permissions);
 
-        // 8. generate and save refresh token
+        //  generate and save refresh token
         String refreshTokenValue = UUID.randomUUID().toString();
 
         RefreshToken refreshToken = RefreshToken.builder()
@@ -150,7 +150,7 @@ public class AuthServiceImpl implements AuthService{
 
         User user = refreshToken.getUser();
 
-        // Collect permissions
+        // Collect permission
         List<String> permissions = user.getRoles().stream()
                 .flatMap(role -> role.getPermissions().stream())
                 .map(permission -> permission.getCode())
