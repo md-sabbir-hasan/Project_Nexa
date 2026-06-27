@@ -8,7 +8,7 @@
     </div>
 
     <!-- Form -->
-    <form>
+    <form (ngSubmit)="onSubmit()">
 
       <!-- Email -->
       <div class="mb-3">
@@ -17,7 +17,13 @@
           <span class="input-group-text">
             <i class="bi bi-envelope"></i>
           </span>
-          <input type="email" class="form-control" placeholder="Enter your email" />
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Enter your email"
+            [(ngModel)]="email"
+            name="email"
+            required />
         </div>
       </div>
 
@@ -28,18 +34,40 @@
           <span class="input-group-text">
             <i class="bi bi-lock"></i>
           </span>
-          <input type="password" class="form-control" placeholder="Enter your password" />
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            class="form-control"
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            name="password"
+            required />
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="togglePassword()">
+            <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+          </button>
         </div>
       </div>
 
       <!-- Error Message -->
-      <div class="alert alert-danger py-2 d-none">
-        Invalid email or password
-      </div>
+      @if (errorMessage) {
+        <div class="alert alert-danger py-2">
+          <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+        </div>
+      }
 
       <!-- Submit -->
-      <button type="submit" class="btn btn-primary w-100 mt-2">
-        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+      <button
+        type="submit"
+        class="btn btn-primary w-100 mt-2"
+        [disabled]="isLoading">
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Signing in...
+        } @else {
+          <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+        }
       </button>
 
     </form>
