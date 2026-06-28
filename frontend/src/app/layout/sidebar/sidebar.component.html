@@ -1,0 +1,211 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+
+  <!-- Logo -->
+  <div class="sidebar-logo d-flex align-items-center px-3 py-3">
+    <i class="bi bi-grid-3x3-gap-fill text-primary fs-4"></i>
+    @if (!isCollapsed) {
+      <span class="ms-2 fw-bold text-primary fs-5">NexaERP</span>
+    }
+  </div>
+
+  <hr class="mx-3 mt-0">
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav px-2">
+
+    <!-- Dashboard -->
+    <a routerLink="/dashboard"
+       routerLinkActive="active"
+       class="nav-item d-flex align-items-center px-3 py-2 rounded mb-1">
+      <i class="bi bi-speedometer2"></i>
+      @if (!isCollapsed) {
+        <span class="ms-2">Dashboard</span>
+      }
+    </a>
+
+    <!-- Accounting -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('accounting')">
+        <i class="bi bi-journal-text"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Accounting</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'accounting'"
+             [class.bi-chevron-up]="openMenu === 'accounting'"></i>
+        }
+      </div>
+      @if (openMenu === 'accounting' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/accounts/chart-of-accounts"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-diagram-3 me-2"></i> Chart of Accounts
+          </a>
+          <a routerLink="/accounts/journal"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-pencil-square me-2"></i> Journal Entry
+          </a>
+          <a routerLink="/accounts/ledger"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-book me-2"></i> Ledger
+          </a>
+          <a routerLink="/accounts/trial-balance"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-bar-chart me-2"></i> Trial Balance
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Party -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('party')">
+        <i class="bi bi-people"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Party</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'party'"
+             [class.bi-chevron-up]="openMenu === 'party'"></i>
+        }
+      </div>
+      @if (openMenu === 'party' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/party/customer"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-person me-2"></i> Customers
+          </a>
+          <a routerLink="/party/vendor"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-shop me-2"></i> Vendors
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Sales -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('sales')">
+        <i class="bi bi-receipt"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Sales</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'sales'"
+             [class.bi-chevron-up]="openMenu === 'sales'"></i>
+        }
+      </div>
+      @if (openMenu === 'sales' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/invoice"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-file-earmark-text me-2"></i> Invoices
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Purchase -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('purchase')">
+        <i class="bi bi-cart"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Purchase</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'purchase'"
+             [class.bi-chevron-up]="openMenu === 'purchase'"></i>
+        }
+      </div>
+      @if (openMenu === 'purchase' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/vendor-bill"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-file-earmark-minus me-2"></i> Vendor Bills
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Payment -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('payment')">
+        <i class="bi bi-credit-card"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Payment</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'payment'"
+             [class.bi-chevron-up]="openMenu === 'payment'"></i>
+        }
+      </div>
+      @if (openMenu === 'payment' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/payment"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-cash me-2"></i> Payments
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Reports -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('reports')">
+        <i class="bi bi-graph-up"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Reports</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'reports'"
+             [class.bi-chevron-up]="openMenu === 'reports'"></i>
+        }
+      </div>
+      @if (openMenu === 'reports' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/report/ledger"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-book-half me-2"></i> Ledger
+          </a>
+          <a routerLink="/report/trial-balance"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-balance-scale me-2"></i> Trial Balance
+          </a>
+        </div>
+      }
+    </div>
+
+    <!-- Administration -->
+    <div class="nav-group mb-1">
+      <div class="nav-group-header d-flex align-items-center px-3 py-2 rounded"
+           (click)="toggleMenu('admin')">
+        <i class="bi bi-gear"></i>
+        @if (!isCollapsed) {
+          <span class="ms-2 flex-grow-1">Administration</span>
+          <i class="bi" [class.bi-chevron-down]="openMenu !== 'admin'"
+             [class.bi-chevron-up]="openMenu === 'admin'"></i>
+        }
+      </div>
+      @if (openMenu === 'admin' && !isCollapsed) {
+        <div class="nav-submenu ps-4">
+          <a routerLink="/admin/users"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-people me-2"></i> Users
+          </a>
+          <a routerLink="/admin/roles"
+             routerLinkActive="active"
+             class="nav-subitem d-flex align-items-center px-3 py-1 rounded mb-1">
+            <i class="bi bi-shield me-2"></i> Roles
+          </a>
+        </div>
+      }
+    </div>
+
+  </nav>
+</div>

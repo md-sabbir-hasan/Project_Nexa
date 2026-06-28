@@ -1,0 +1,13 @@
+.layout-wrapper {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.main-content {
+  overflow-x: hidden;
+  transition: all 0.3s ease;
+}
+
+.page-content {
+  min-height: calc(100vh - 60px);
+}
