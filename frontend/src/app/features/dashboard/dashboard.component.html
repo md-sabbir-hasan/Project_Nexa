@@ -1,0 +1,117 @@
+<div class="dashboard">
+
+  <!-- Page Title -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="fw-bold mb-0">Dashboard</h4>
+      <small class="text-muted">Welcome back! Here's what's happening.</small>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+
+    <!-- Total Receivable -->
+    <div class="col-md-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted small mb-1">Total Receivable</p>
+              <h5 class="fw-bold text-success mb-0">
+                ৳ {{ stats.totalReceivable | number }}
+              </h5>
+            </div>
+            <div class="kpi-icon bg-success-subtle">
+              <i class="bi bi-arrow-down-circle text-success fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Payable -->
+    <div class="col-md-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted small mb-1">Total Payable</p>
+              <h5 class="fw-bold text-danger mb-0">
+                ৳ {{ stats.totalPayable | number }}
+              </h5>
+            </div>
+            <div class="kpi-icon bg-danger-subtle">
+              <i class="bi bi-arrow-up-circle text-danger fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cash Balance -->
+    <div class="col-md-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted small mb-1">Cash Balance</p>
+              <h5 class="fw-bold text-primary mb-0">
+                ৳ {{ stats.cashBalance | number }}
+              </h5>
+            </div>
+            <div class="kpi-icon bg-primary-subtle">
+              <i class="bi bi-cash-stack text-primary fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bank Balance -->
+    <div class="col-md-3">
+      <div class="card kpi-card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="text-muted small mb-1">Bank Balance</p>
+              <h5 class="fw-bold text-info mb-0">
+                ৳ {{ stats.bankBalance | number }}
+              </h5>
+            </div>
+            <div class="kpi-icon bg-info-subtle">
+              <i class="bi bi-bank text-info fs-4"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row g-3 mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="fw-bold mb-3">Quick Actions</h6>
+          <div class="d-flex gap-2 flex-wrap">
+            <button class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-file-earmark-plus me-1"></i> New Invoice
+            </button>
+            <button class="btn btn-outline-success btn-sm">
+              <i class="bi bi-cash me-1"></i> New Payment
+            </button>
+            <button class="btn btn-outline-warning btn-sm">
+              <i class="bi bi-file-earmark-minus me-1"></i> New Vendor Bill
+            </button>
+            <button class="btn btn-outline-info btn-sm">
+              <i class="bi bi-pencil-square me-1"></i> New Journal Entry
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
