@@ -1,0 +1,20 @@
+.tree-item {
+  transition: background 0.15s ease;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.table tbody tr {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+.modal {
+  z-index: 1055;
+}
