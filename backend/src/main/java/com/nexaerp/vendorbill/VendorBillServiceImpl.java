@@ -7,6 +7,8 @@ import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.journal.*;
 import com.nexaerp.party.Party;
 import com.nexaerp.party.PartyRepository;
+import com.nexaerp.settings.SettingKey;
+import com.nexaerp.settings.SystemSettingsService;
 import com.nexaerp.vendorbill.dto.VendorBillItemRequestDto;
 import com.nexaerp.vendorbill.dto.VendorBillItemResponseDto;
 import com.nexaerp.vendorbill.dto.VendorBillRequestDto;
@@ -34,6 +36,7 @@ public class VendorBillServiceImpl implements VendorBillService {
     private final AccountRepository accountRepository;
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
+    private final SystemSettingsService systemSettingsService;
 
 
     @Override
@@ -329,14 +332,12 @@ public class VendorBillServiceImpl implements VendorBillService {
     private void createJournalEntry(VendorBill bill) {
 
         // Get Accounts Payable account
-        Account payable = accountRepository.findByCode("2110")
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Accounts Payable not found"));
+        Account payable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_PAYABLE_ACCOUNT);
 
         // Get TDS Payable account
-        Account tdsPayable = accountRepository.findByCode("2130")
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "TDS Payable not found"));
+        Account tdsPayable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_TDS_PAYABLE);
 
         // Create the journal entry header
         JournalEntry entry = new JournalEntry();

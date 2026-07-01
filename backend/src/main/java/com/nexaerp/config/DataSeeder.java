@@ -1,9 +1,13 @@
 package com.nexaerp.config;
 
+import com.nexaerp.account.AccountRepository;
 import com.nexaerp.permission.Permission;
 import com.nexaerp.permission.PermissionRepository;
 import com.nexaerp.role.Role;
 import com.nexaerp.role.RoleRepository;
+import com.nexaerp.settings.SettingKey;
+import com.nexaerp.settings.SystemSetting;
+import com.nexaerp.settings.SystemSettingRepository;
 import com.nexaerp.user.User;
 import com.nexaerp.user.UserRepository;
 import com.nexaerp.user.UserStatus;
@@ -25,12 +29,15 @@ public class DataSeeder implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SystemSettingRepository systemSettingRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public void run(String... args) throws Exception {
         seedPermissions();
         seedRoles();
         seedAdminUser();
+        seedSystemSettings();
 
     }
 
@@ -162,6 +169,54 @@ public class DataSeeder implements CommandLineRunner {
                     .failedLoginAttempts(0)
                     .roles(roles)
                     .build());
+        }
+    }
+
+
+    private void seedSystemSettings() {
+
+        // Find accounts by code and store their IDs
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_RECEIVABLE_ACCOUNT, "1120",
+                "Default Accounts Receivable account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_PAYABLE_ACCOUNT, "2110",
+                "Default Accounts Payable account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_SALES_REVENUE, "4100",
+                "Default Sales Revenue account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_VAT_PAYABLE, "2120",
+                "Default VAT Payable account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_INPUT_VAT, "1130",
+                "Default Input VAT account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_TDS_PAYABLE, "2130",
+                "Default TDS Payable account");
+
+        saveSettingIfNotExists(
+                SettingKey.DEFAULT_OPENING_EQUITY, "3100",
+                "Default Opening Balance Equity account");
+    }
+
+    private void saveSettingIfNotExists(SettingKey key,
+                                        String accountCode,
+                                        String description) {
+        if (!systemSettingRepository.existsByKey(key)) {
+            // Find account by code and get its ID
+            accountRepository.findByCode(accountCode).ifPresent(account -> {
+                systemSettingRepository.save(SystemSetting.builder()
+                        .key(key)
+                        .value(String.valueOf(account.getId()))
+                        .description(description)
+                        .build());
+            });
         }
     }
 }

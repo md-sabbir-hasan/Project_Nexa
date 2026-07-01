@@ -14,6 +14,8 @@ import com.nexaerp.payment.dto.PaymentAllocationRequestDto;
 import com.nexaerp.payment.dto.PaymentAllocationResponseDto;
 import com.nexaerp.payment.dto.PaymentRequestDto;
 import com.nexaerp.payment.dto.PaymentResponseDto;
+import com.nexaerp.settings.SettingKey;
+import com.nexaerp.settings.SystemSettingsService;
 import com.nexaerp.vendorbill.VendorBill;
 import com.nexaerp.vendorbill.VendorBillRepository;
 import com.nexaerp.vendorbill.VendorBillStatus;
@@ -40,8 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final VendorBillRepository vendorBillRepository;
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
-
-
+    private final SystemSettingsService systemSettingsService;
 
 
     @Override
@@ -344,10 +345,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     private void createJournalEntry(Payment payment) {
 
-        Account receivable = accountRepository.findByCode("1120")
-                .orElseThrow(() -> new ResourceNotFoundException("Accounts Receivable not found"));
-        Account payable = accountRepository.findByCode("2110")
-                .orElseThrow(() -> new ResourceNotFoundException("Accounts Payable not found"));
+        Account receivable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_RECEIVABLE_ACCOUNT);
+        Account payable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_PAYABLE_ACCOUNT);
 
         JournalEntry entry = new JournalEntry();
         entry.setEntryNumber(generateJournalNumber());

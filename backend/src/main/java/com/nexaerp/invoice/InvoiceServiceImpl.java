@@ -11,6 +11,8 @@ import com.nexaerp.invoice.dto.InvoiceResponseDto;
 import com.nexaerp.journal.*;
 import com.nexaerp.party.Party;
 import com.nexaerp.party.PartyRepository;
+import com.nexaerp.settings.SettingKey;
+import com.nexaerp.settings.SystemSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class InvoiceServiceImpl implements InvoiceService{
     private final AccountRepository accountRepository;
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
+    private final SystemSettingsService systemSettingsService;
 
     @Override
     @Transactional
@@ -249,14 +252,14 @@ public class InvoiceServiceImpl implements InvoiceService{
 
     private void createJournalEntry(Invoice invoice) {
 
-        Account receivable = accountRepository.findByCode("1120")
-                .orElseThrow(() -> new ResourceNotFoundException("Accounts Receivable not found"));
+        Account receivable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_RECEIVABLE_ACCOUNT);
 
-        Account salesRevenue = accountRepository.findByCode("4100")
-                .orElseThrow(() -> new ResourceNotFoundException("Sales Revenue not found"));
+        Account salesRevenue = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_SALES_REVENUE);
 
-        Account vatPayable = accountRepository.findByCode("2120")
-                .orElseThrow(() -> new ResourceNotFoundException("VAT Payable not found"));
+        Account vatPayable = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_VAT_PAYABLE);
 
         //Make Journal Entry
         JournalEntry entry = new JournalEntry();
