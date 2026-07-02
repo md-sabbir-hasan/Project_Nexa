@@ -1,19 +1,14 @@
 package com.nexaerp.auth;
 
 
-import com.nexaerp.auth.dto.LoginRequestDto;
-import com.nexaerp.auth.dto.LoginResponseDto;
-import com.nexaerp.auth.dto.RefreshTokenRequestDto;
+import com.nexaerp.auth.dto.*;
 import com.nexaerp.common.response.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -47,5 +42,41 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Void>> logout(
             @AuthenticationPrincipal String email) {
         return ResponseEntity.ok(ApiResponse.success("Logged out successfully", null));
+    }
+
+//    ===============email========
+
+    // Verify email
+    @PostMapping("/verify-email")
+    public ResponseEntity<ApiResponse<Void>> verifyEmail(
+            @RequestParam String token) {
+        authService.verifyEmail(token);
+        return ResponseEntity.ok(ApiResponse.success("Email verified successfully", null));
+    }
+
+    // Resend verification
+    @PostMapping("/resend-verification")
+    public ResponseEntity<ApiResponse<Void>> resendVerification(
+            @RequestParam String email) {
+        authService.resendVerification(email);
+        return ResponseEntity.ok(ApiResponse.success("Verification email sent", null));
+    }
+
+    // Forgot password
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<Void>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequestDto request) {
+        authService.forgotPassword(request.getEmail());
+        return ResponseEntity.ok(ApiResponse.success(
+                "Password reset email sent", null));
+    }
+
+    // Reset password
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequestDto request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(ApiResponse.success(
+                "Password reset successfully", null));
     }
 }

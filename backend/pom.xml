@@ -109,6 +109,13 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
+
+		<!--email setup-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -2,6 +2,8 @@ package com.nexaerp.invoice;
 
 import com.nexaerp.account.Account;
 import com.nexaerp.account.AccountRepository;
+import com.nexaerp.audit.AuditAction;
+import com.nexaerp.audit.AuditLogService;
 import com.nexaerp.common.exception.BusinessRuleException;
 import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.invoice.dto.InvoiceItemRequestDto;
@@ -36,6 +38,7 @@ public class InvoiceServiceImpl implements InvoiceService{
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
     private final SystemSettingsService systemSettingsService;
+    private final AuditLogService auditLogService;
 
     @Override
     @Transactional
@@ -70,6 +73,16 @@ public class InvoiceServiceImpl implements InvoiceService{
 
         // Totals calculate
         calculateAndSaveTotals(saved, items);
+
+        // Audit Log
+
+        auditLogService.log(
+                AuditAction.CREATED,
+                "INVOICE",
+                saved.getId(),
+                null,
+                saved.getInvoiceNumber()
+        );
 
         return toResponse(saved);
     }
@@ -154,6 +167,14 @@ public class InvoiceServiceImpl implements InvoiceService{
         invoice.setStatus(InvoiceStatus.POSTED);
         invoice.setPostedAt(LocalDateTime.now());
 
+        auditLogService.log(
+                AuditAction.POSTED,
+                "INVOICE",
+                invoice.getId(),
+                "DRAFT",
+                "POSTED"
+        );
+
         return toResponse(invoiceRepository.save(invoice));
     }
 
@@ -180,6 +201,13 @@ public class InvoiceServiceImpl implements InvoiceService{
         invoice.setStatus(InvoiceStatus.CANCELLED);
         invoice.setCancelledReason(reason);
         invoice.setDueAmount(BigDecimal.ZERO);
+
+        auditLogService.log(
+                AuditAction.CANCELLED,
+                "INVOICE",
+                invoice.getId(),
+                invoice.getStatus().name(),
+                "CANCELLED");
 
         return toResponse(invoiceRepository.save(invoice));
     }

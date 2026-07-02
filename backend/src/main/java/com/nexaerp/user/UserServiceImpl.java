@@ -1,5 +1,8 @@
 package com.nexaerp.user;
 
+import com.nexaerp.audit.AuditAction;
+import com.nexaerp.audit.AuditLogService;
+import com.nexaerp.auth.AuthService;
 import com.nexaerp.common.exception.BusinessRuleException;
 import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.role.Role;
@@ -23,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuditLogService auditLogService;
+    private final AuthService authService;
 
 
     @Override
@@ -41,6 +46,22 @@ public class UserServiceImpl implements UserService {
                 .failedLoginAttempts(0)
                 .roles(roles)
                 .build();
+
+
+        // audit
+        User saved = userRepository.save(user);
+
+        // Send verification email — status PENDING র
+        // user.setStatus(UserStatus.PENDING); //
+        authService.sendVerificationEmail(saved);
+
+        auditLogService.log(
+                AuditAction.CREATED,
+                "USER",
+                saved.getId(),
+                null,
+                saved.getEmail()
+        );
 
         return toResponse(userRepository.save(user));
 

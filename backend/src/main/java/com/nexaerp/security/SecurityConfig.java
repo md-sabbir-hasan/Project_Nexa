@@ -51,7 +51,11 @@ public class SecurityConfig {
                         // Public endpoints = no token needed
                         .requestMatchers(
                                 "/api/auth/login",
-                                "/api/auth/refresh"
+                                "/api/auth/refresh",
+                                "/api/auth/verify-email",
+                                "/api/auth/forgot-password",
+                                "/api/auth/reset-password",
+                                "/api/auth/resend-verification"
                         ).permitAll()
 
                         // Everything requires authentication

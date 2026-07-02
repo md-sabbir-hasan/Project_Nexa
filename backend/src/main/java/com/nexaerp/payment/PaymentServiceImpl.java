@@ -2,6 +2,8 @@ package com.nexaerp.payment;
 
 import com.nexaerp.account.Account;
 import com.nexaerp.account.AccountRepository;
+import com.nexaerp.audit.AuditAction;
+import com.nexaerp.audit.AuditLogService;
 import com.nexaerp.common.exception.BusinessRuleException;
 import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.invoice.Invoice;
@@ -43,6 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
     private final SystemSettingsService systemSettingsService;
+    private final AuditLogService auditLogService;
 
 
     @Override
@@ -141,6 +144,16 @@ public class PaymentServiceImpl implements PaymentService {
 
         payment.setStatus(PaymentStatus.POSTED);
         payment.setPostedAt(LocalDateTime.now());
+
+
+        //audit
+        auditLogService.log(
+                AuditAction.POSTED,
+                "PAYMENT",
+                payment.getId(),
+                "DRAFT",
+                "POSTED"
+        );
 
         return toResponse(paymentRepository.save(payment));
     }
