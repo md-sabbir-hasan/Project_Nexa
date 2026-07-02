@@ -2,10 +2,8 @@ package com.nexaerp.report;
 
 
 import com.nexaerp.common.response.ApiResponse;
-import com.nexaerp.report.dto.BalanceSheetResponseDto;
-import com.nexaerp.report.dto.LedgerResponseDto;
-import com.nexaerp.report.dto.ProfitLossResponseDto;
-import com.nexaerp.report.dto.TrialBalanceResponseDto;
+import com.nexaerp.party.PartyType;
+import com.nexaerp.report.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -54,5 +52,24 @@ public class ReportController {
         LocalDate date = asOfDate != null ? asOfDate : LocalDate.now();
         return ResponseEntity.ok(ApiResponse.success(
                 reportService.getBalanceSheet(date)));
+    }
+
+
+    @GetMapping("/party-statement/{partyId}")
+    public ResponseEntity<ApiResponse<PartyStatementResponseDto>> getPartyStatement(
+            @PathVariable Long partyId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+        return ResponseEntity.ok(ApiResponse.success(
+                reportService.getPartyStatement(partyId, fromDate, toDate)));
+    }
+
+    @GetMapping("/aging")
+    public ResponseEntity<ApiResponse<AgingResponseDto>> getAgingReport(
+            @RequestParam PartyType partyType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
+        LocalDate date = asOfDate != null ? asOfDate : LocalDate.now();
+        return ResponseEntity.ok(ApiResponse.success(
+                reportService.getAgingReport(partyType, date)));
     }
 }
