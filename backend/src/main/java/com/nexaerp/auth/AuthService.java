@@ -1,9 +1,6 @@
 package com.nexaerp.auth;
 
-import com.nexaerp.auth.dto.LoginRequestDto;
-import com.nexaerp.auth.dto.LoginResponseDto;
-import com.nexaerp.auth.dto.RefreshTokenRequestDto;
-import com.nexaerp.auth.dto.ResetPasswordRequestDto;
+import com.nexaerp.auth.dto.*;
 import com.nexaerp.user.User;
 
 public interface AuthService {
@@ -24,4 +21,16 @@ public interface AuthService {
     void resetPassword(ResetPasswordRequestDto request);
     void resendVerification(String email);
     void sendVerificationEmail(User user);
+
+
+    // Validate invite token (check if valid and not expired)
+    void validateInviteToken(String token);
+
+    // Set password using invite token
+    void setPassword(SetPasswordRequestDto request);
+
+    void sendInviteEmail(User user);
+
+    // Resend invite email
+    void resendInvite(String email);
 }

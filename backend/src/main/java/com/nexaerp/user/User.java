@@ -41,6 +41,11 @@ public class User extends BaseEntity {
     private LocalDateTime lastLoginAt;
     private LocalDateTime passwordChangedAt;
 
+
+    // Invite fields
+    private String inviteToken;
+    private LocalDateTime inviteExpiry;
+
     // Future multi-company support
     private Long companyId;
 

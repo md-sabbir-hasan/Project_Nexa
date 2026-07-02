@@ -12,6 +12,7 @@ import com.nexaerp.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Transactional
     public UserResponseDto create(UserRequestDto request) {
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BusinessRuleException("Email already exists: " + request.getEmail());
         }
@@ -41,31 +44,22 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .status(UserStatus.ACTIVE)
+                .password(null)           // No password yet
+                .status(UserStatus.PENDING) // PENDING until password set
                 .failedLoginAttempts(0)
                 .roles(roles)
                 .build();
 
-
-        // audit
         User saved = userRepository.save(user);
 
-        // Send verification email — status PENDING র
-        // user.setStatus(UserStatus.PENDING); //
-        authService.sendVerificationEmail(saved);
+        // Send invite email
+        authService.sendInviteEmail(saved);
 
-        auditLogService.log(
-                AuditAction.CREATED,
-                "USER",
-                saved.getId(),
-                null,
-                saved.getEmail()
-        );
+        // Audit log
+        auditLogService.log(AuditAction.CREATED, "USER", saved.getId(),
+                null, saved.getEmail());
 
-        return toResponse(userRepository.save(user));
-
-
+        return toResponse(saved);
     }
 
     @Override
@@ -81,12 +75,6 @@ public class UserServiceImpl implements UserService {
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-
-        // Password give then update
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-
         user.setRoles(getRoles(request.getRoleIds()));
 
         return toResponse(userRepository.save(user));

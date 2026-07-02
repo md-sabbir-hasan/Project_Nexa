@@ -76,4 +76,24 @@ public class EmailServiceImpl implements EmailService{
                 .build());
 
     }
+
+    @Override
+    public void sendInviteEmail(String toEmail, String userName, String token) {
+        String inviteLink = frontendUrl + "/set-password?token=" + token;
+
+        String body = "Dear " + userName + ",\n\n" +
+                "You have been invited to NexaERP!\n\n" +
+                "Click the link below to set your password and activate your account:\n\n" +
+                inviteLink + "\n\n" +
+                "This link will expire in 48 hours.\n\n" +
+                "If you did not expect this invitation, please ignore this email.\n\n" +
+                "Best regards,\n" +
+                "NexaERP Team";
+
+        sendEmail(EmailDto.builder()
+                .to(toEmail)
+                .subject("You're Invited to NexaERP — Set Your Password")
+                .body(body)
+                .build());
+    }
 }

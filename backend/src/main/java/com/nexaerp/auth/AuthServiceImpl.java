@@ -2,10 +2,7 @@ package com.nexaerp.auth;
 
 import com.nexaerp.audit.AuditAction;
 import com.nexaerp.audit.AuditLogService;
-import com.nexaerp.auth.dto.LoginRequestDto;
-import com.nexaerp.auth.dto.LoginResponseDto;
-import com.nexaerp.auth.dto.RefreshTokenRequestDto;
-import com.nexaerp.auth.dto.ResetPasswordRequestDto;
+import com.nexaerp.auth.dto.*;
 import com.nexaerp.common.exception.BusinessRuleException;
 import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.email.EmailService;
@@ -322,6 +319,77 @@ public class AuthServiceImpl implements AuthService{
 
         emailVerificationRepository.save(verification);
         emailService.sendVerificationEmail(user.getEmail(), user.getName(), token);
+
+    }
+
+    @Override
+    public void validateInviteToken(String token) {
+        User user = userRepository.findByInviteToken(token)
+                .orElseThrow(() -> new BusinessRuleException("Invalid invite token"));
+
+        if (LocalDateTime.now().isAfter(user.getInviteExpiry())) {
+            throw new BusinessRuleException(
+                    "Invite link has expired. Please ask admin to resend.");
+        }
+
+        if (user.getStatus() != UserStatus.PENDING) {
+            throw new BusinessRuleException("Account already activated");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void setPassword(SetPasswordRequestDto request) {
+        // Validate token
+        User user = userRepository.findByInviteToken(request.getInviteToken())
+                .orElseThrow(() -> new BusinessRuleException("Invalid invite token"));
+
+        if (LocalDateTime.now().isAfter(user.getInviteExpiry())) {
+            throw new BusinessRuleException("Invite link has expired");
+        }
+
+        if (user.getStatus() != UserStatus.PENDING) {
+            throw new BusinessRuleException("Account already activated");
+        }
+
+        // Password confirm check
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new BusinessRuleException("Passwords do not match");
+        }
+
+        // Set password and activate account
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(UserStatus.ACTIVE);
+        user.setInviteToken(null);    // Token clear করো
+        user.setInviteExpiry(null);
+        user.setPasswordChangedAt(LocalDateTime.now());
+        userRepository.save(user);
+
+    }
+
+    @Override
+    @Transactional
+    public void resendInvite(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (user.getStatus() != UserStatus.PENDING) {
+            throw new BusinessRuleException("Account already activated");
+        }
+
+        sendInviteEmail(user);
+    }
+
+    @Override
+    public void sendInviteEmail(User user) {
+        String token = UUID.randomUUID().toString();
+
+        user.setInviteToken(token);
+        user.setInviteExpiry(LocalDateTime.now().plusHours(48));
+        userRepository.save(user);
+
+        emailService.sendInviteEmail(user.getEmail(), user.getName(), token);
 
     }
 }
