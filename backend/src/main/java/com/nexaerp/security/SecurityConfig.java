@@ -55,7 +55,10 @@ public class SecurityConfig {
                                 "/api/auth/verify-email",
                                 "/api/auth/forgot-password",
                                 "/api/auth/reset-password",
-                                "/api/auth/resend-verification"
+                                "/api/auth/resend-verification",
+                                "/api/auth/validate-invite",
+                                "/api/auth/set-password",
+                                "/api/auth/resend-invite"
                         ).permitAll()
 
                         // Everything requires authentication

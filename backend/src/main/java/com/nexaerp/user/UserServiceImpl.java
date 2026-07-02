@@ -10,7 +10,6 @@ import com.nexaerp.role.RoleRepository;
 import com.nexaerp.user.dto.UserRequestDto;
 import com.nexaerp.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
     private final AuditLogService auditLogService;
     private final AuthService authService;
 
@@ -77,6 +75,17 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setRoles(getRoles(request.getRoleIds()));
 
+        User updated = userRepository.save(user);
+
+        // Audit
+        auditLogService.log(
+                AuditAction.UPDATED,
+                "USER",
+                updated.getId(),
+                null,
+                updated.getEmail()
+        );
+
         return toResponse(userRepository.save(user));
     }
 
@@ -101,6 +110,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
+        // Audit
+        auditLogService.log(
+                AuditAction.DEACTIVATED,
+                "USER",
+                user.getId(),
+                "ACTIVE",
+                "INACTIVE"
+        );
     }
 
 

@@ -12,6 +12,7 @@ import com.nexaerp.user.User;
 import com.nexaerp.user.UserRepository;
 import com.nexaerp.user.UserStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,12 @@ public class DataSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final SystemSettingRepository systemSettingRepository;
     private final AccountRepository accountRepository;
+
+    @Value("${app.default-admin.email}")
+    private String adminEmail;
+
+    @Value("${app.default-admin.password}")
+    private String adminPassword;
 
     @Override
     public void run(String... args) throws Exception {
@@ -151,8 +158,6 @@ public class DataSeeder implements CommandLineRunner {
     //--- ASSIGN DEFAULT SUPER_ADMIN USER
     private void seedAdminUser() {
 
-        String adminEmail = "admin@nexaerp.com";
-
         if (!userRepository.existsByEmail(adminEmail)) {
 
             Role superAdminRole = roleRepository.findByName("SUPER_ADMIN")
@@ -164,7 +169,7 @@ public class DataSeeder implements CommandLineRunner {
             userRepository.save(User.builder()
                     .name("Super Admin")
                     .email(adminEmail)
-                    .password(passwordEncoder.encode("admin123"))
+                    .password(passwordEncoder.encode(adminPassword))
                     .status(UserStatus.ACTIVE)
                     .failedLoginAttempts(0)
                     .roles(roles)

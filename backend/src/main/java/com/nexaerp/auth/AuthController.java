@@ -79,4 +79,30 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(
                 "Password reset successfully", null));
     }
+
+
+    // Validate invite token (Frontend এ Set Password page load হলে call করবে)
+    @GetMapping("/validate-invite")
+    public ResponseEntity<ApiResponse<Void>> validateInvite(
+            @RequestParam String token) {
+        authService.validateInviteToken(token);
+        return ResponseEntity.ok(ApiResponse.success("Token is valid", null));
+    }
+
+    // Set password using invite token
+    @PostMapping("/set-password")
+    public ResponseEntity<ApiResponse<Void>> setPassword(
+            @Valid @RequestBody SetPasswordRequestDto request) {
+        authService.setPassword(request);
+        return ResponseEntity.ok(ApiResponse.success(
+                "Password set successfully. You can now login.", null));
+    }
+
+    // Resend invite
+    @PostMapping("/resend-invite")
+    public ResponseEntity<ApiResponse<Void>> resendInvite(
+            @RequestParam String email) {
+        authService.resendInvite(email);
+        return ResponseEntity.ok(ApiResponse.success("Invite email resent", null));
+    }
 }
