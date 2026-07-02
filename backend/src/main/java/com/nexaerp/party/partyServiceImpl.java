@@ -7,6 +7,8 @@ import com.nexaerp.common.exception.ResourceNotFoundException;
 import com.nexaerp.journal.*;
 import com.nexaerp.party.dto.PartyRequestDto;
 import com.nexaerp.party.dto.PartyResponseDto;
+import com.nexaerp.settings.SettingKey;
+import com.nexaerp.settings.SystemSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,7 @@ public class partyServiceImpl implements PartyService{
     private final JournalEntryRepository journalEntryRepository;
     private final JournalLineRepository journalLineRepository;
     private final AccountRepository accountRepository;
+    private final SystemSettingsService systemSettingsService;
 
 
     @Override
@@ -98,13 +101,12 @@ public class partyServiceImpl implements PartyService{
                               // -- Private Helpers --
     private void createOpeningBalanceEntry (Party party){
         // Find Account
-        String accountCode = (party.getType() == PartyType.VENDOR) ? "2110" : "1120";  // Accounts Payable:Accounts Receivable
+        Account partyAccount = (party.getType() == PartyType.VENDOR)
+                ? systemSettingsService.getAccount(SettingKey.DEFAULT_PAYABLE_ACCOUNT)
+                : systemSettingsService.getAccount(SettingKey.DEFAULT_RECEIVABLE_ACCOUNT);
 
-        Account partyAccount = accountRepository.findByCode(accountCode).
-                orElseThrow(() -> new ResourceNotFoundException("Opening Balance Equity account not found"));
-
-        Account openingEquity = accountRepository.findByCode("3100")
-                .orElseThrow(() -> new ResourceNotFoundException("Opening Balance Equity account not found"));
+        Account openingEquity = systemSettingsService.getAccount(
+                SettingKey.DEFAULT_OPENING_EQUITY);
 
         // Make Journal Entry
 

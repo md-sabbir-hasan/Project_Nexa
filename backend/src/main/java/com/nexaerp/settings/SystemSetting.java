@@ -19,10 +19,10 @@ public class SystemSetting {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, unique = true)
+    @Column(name = "setting_key", nullable = false, unique = true)
     private SettingKey key;
 
-    @Column(nullable = false)
+    @Column(name = "setting_value", nullable = false)
     private String value;
 
     private String description;
