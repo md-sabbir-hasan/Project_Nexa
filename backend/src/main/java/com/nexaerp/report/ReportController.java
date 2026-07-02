@@ -2,7 +2,9 @@ package com.nexaerp.report;
 
 
 import com.nexaerp.common.response.ApiResponse;
+import com.nexaerp.report.dto.BalanceSheetResponseDto;
 import com.nexaerp.report.dto.LedgerResponseDto;
+import com.nexaerp.report.dto.ProfitLossResponseDto;
 import com.nexaerp.report.dto.TrialBalanceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,5 +37,22 @@ public class ReportController {
 
         return ResponseEntity.ok(ApiResponse.success(
                 reportService.getTrialBalance(date)));
+    }
+
+
+    @GetMapping("/profit-loss")
+    public ResponseEntity<ApiResponse<ProfitLossResponseDto>> getProfitLoss(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+        return ResponseEntity.ok(ApiResponse.success(
+                reportService.getProfitLoss(fromDate, toDate)));
+    }
+
+    @GetMapping("/balance-sheet")
+    public ResponseEntity<ApiResponse<BalanceSheetResponseDto>> getBalanceSheet(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate asOfDate) {
+        LocalDate date = asOfDate != null ? asOfDate : LocalDate.now();
+        return ResponseEntity.ok(ApiResponse.success(
+                reportService.getBalanceSheet(date)));
     }
 }
